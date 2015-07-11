@@ -77,7 +77,7 @@
       "language_contribute" : "Contribute with translations",
       "show_unread" : "Show feeds and categories with no unread entries",
       "social_buttons" : "Show social sharing buttons",
-      "scroll_marks" : "In expanded view, scrolling through entries mark them as read"
+      "scroll_marks" : "Scrolling through entries mark them as read"
     },
     "appearance" : "Appearance",
     "scroll_speed" : "Scrolling speed when navigating between entries (in milliseconds)",

@@ -26,7 +26,7 @@ public class Settings implements Serializable {
 	@ApiModelProperty(value = "user wants category and feeds with no unread entries shown", required = true)
 	private boolean showRead;
 
-	@ApiModelProperty(value = "In expanded view, scroll through entries mark them as read", required = true)
+	@ApiModelProperty(value = "Scrolling through entries mark them as read", required = true)
 	private boolean scrollMarks;
 
 	@ApiModelProperty(value = "user's selected theme")
