@@ -1,7 +1,6 @@
 package com.commafeed.backend.dao;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -13,7 +12,7 @@ import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.hibernate.SessionFactory;
 
 import com.commafeed.CommaFeedConfiguration;
-import com.commafeed.backend.FixedSizeSortedSet;
+import com.commafeed.backend.FixedSizeSet;
 import com.commafeed.backend.feed.FeedEntryKeyword;
 import com.commafeed.backend.feed.FeedEntryKeyword.Mode;
 import com.commafeed.backend.model.FeedEntry;
@@ -54,18 +53,6 @@ public class FeedEntryStatusDAO extends GenericDAO<FeedEntryStatus> {
 		this.feedEntryTagDAO = feedEntryTagDAO;
 		this.config = config;
 	}
-
-	private static final Comparator<FeedEntryStatus> STATUS_COMPARATOR_DESC = new Comparator<FeedEntryStatus>() {
-		@Override
-		public int compare(FeedEntryStatus o1, FeedEntryStatus o2) {
-			CompareToBuilder builder = new CompareToBuilder();
-			builder.append(o2.getEntryUpdated(), o1.getEntryUpdated());
-			builder.append(o2.getId(), o1.getId());
-			return builder.toComparison();
-		};
-	};
-
-	private static final Comparator<FeedEntryStatus> STATUS_COMPARATOR_ASC = Ordering.from(STATUS_COMPARATOR_DESC).reverse();
 
 	public FeedEntryStatus getStatus(User user, FeedSubscription sub, FeedEntry entry) {
 		List<FeedEntryStatus> statuses = query().selectFrom(status).where(status.entry.eq(entry), status.subscription.eq(sub)).fetch();
@@ -193,8 +180,7 @@ public class FeedEntryStatusDAO extends GenericDAO<FeedEntryStatus> {
 			List<FeedEntryKeyword> keywords, Date newerThan, int offset, int limit, ReadingOrder order, boolean includeContent,
 			boolean onlyIds, String tag) {
 		int capacity = offset + limit;
-		Comparator<FeedEntryStatus> comparator = order == ReadingOrder.desc ? STATUS_COMPARATOR_DESC : STATUS_COMPARATOR_ASC;
-		FixedSizeSortedSet<FeedEntryStatus> set = new FixedSizeSortedSet<FeedEntryStatus>(capacity, comparator);
+		FixedSizeSet<FeedEntryStatus> set = new FixedSizeSet<FeedEntryStatus>(capacity);
 		for (FeedSubscription sub : subs) {
 			Date last = (order != null && set.isFull()) ? set.last().getEntryUpdated() : null;
 			HibernateQuery<FeedEntry> query = buildQuery(user, sub, unreadOnly, keywords, newerThan, -1, capacity, order, last, tag);
