@@ -833,10 +833,27 @@ module.controller('FeedListCtrl', [
 				}
 
 				$scope.navigationMode = 'scroll';
-				if (SettingsService.settings.viewMode == 'expanded') {
-					var w = $(window);
-					var docTop = w.scrollTop();
 
+				var w = $(window);
+				var docTop = w.scrollTop();
+
+				if (SettingsService.settings.scrollMarks) {
+					var toolbarBottom = docTop + $('#toolbar').outerHeight();
+
+					var entryBottom = function(entry) {
+						var e = $('#entry_' + entry.id);
+						return e.offset().top + e.height();
+					};
+
+					_.chain($scope.entries)
+								.filter(function(entry) { return entryBottom(entry) < toolbarBottom; })
+								.filter(function(entry) { return !entry.read; })
+								.each(function(entry) { $scope.mark(entry, true); })
+								.value()
+								;
+				}
+
+				if (SettingsService.settings.viewMode == 'expanded') {
 					var current = null;
 					for (var i = 0; i < $scope.entries.length; i++) {
 						var entry = $scope.entries[i];
@@ -850,9 +867,6 @@ module.controller('FeedListCtrl', [
 					var previous = $scope.current;
 					$scope.current = current;
 					if (previous != current) {
-						if (SettingsService.settings.scrollMarks) {
-							$scope.mark($scope.current, true);
-						}
 						watch_current = false;
 						$scope.$apply();
 						watch_current = true;
