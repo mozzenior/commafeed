@@ -13,8 +13,6 @@ import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -40,6 +38,7 @@ import com.ibm.icu.text.CharsetMatch;
 import com.steadystate.css.parser.CSSOMParser;
 
 import edu.uci.ics.crawler4j.url.URLCanonicalizer;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Utility methods related to feed handling
@@ -87,7 +86,7 @@ public class FeedUtils {
 		whitelist.addAttributes("th", "border", "bordercolor", "abbr", "axis", "colspan", "rowspan", "scope", "width");
 		whitelist.addAttributes("ul", "type");
 
-		whitelist.addProtocols("a", "href", "ftp", "http", "https", "mailto");
+		whitelist.addProtocols("a", "href", "ftp", "http", "https", "magnet", "mailto");
 		whitelist.addProtocols("blockquote", "cite", "http", "https");
 		whitelist.addProtocols("img", "src", "http", "https");
 		whitelist.addProtocols("q", "cite", "http", "https");
@@ -438,10 +437,7 @@ public class FeedUtils {
 		return removeTrailingSlash(publicUrl) + "/rest/feed/favicon/" + subscription.getId();
 	}
 
-	public static String proxyImages(String content, String publicUrl, boolean proxyImages) {
-		if (!proxyImages) {
-			return content;
-		}
+	public static String proxyImages(String content, String publicUrl) {
 		if (StringUtils.isBlank(content)) {
 			return content;
 		}
@@ -451,12 +447,19 @@ public class FeedUtils {
 		for (Element element : elements) {
 			String href = element.attr("src");
 			if (href != null) {
-				String proxy = removeTrailingSlash(publicUrl) + "/rest/server/proxy?u=" + imageProxyEncoder(href);
+				String proxy = proxyImage(href, publicUrl);
 				element.attr("src", proxy);
 			}
 		}
 
 		return doc.body().html();
+	}
+
+	public static String proxyImage(String url, String publicUrl) {
+		if (StringUtils.isBlank(url)) {
+			return url;
+		}
+		return removeTrailingSlash(publicUrl) + "/rest/server/proxy?u=" + imageProxyEncoder(url);
 	}
 
 	public static String rot13(String msg) {
@@ -491,8 +494,8 @@ public class FeedUtils {
 			Entry entry = it.next();
 			boolean keep = true;
 			for (FeedEntryKeyword keyword : keywords) {
-				String title = Jsoup.parse(entry.getTitle()).text();
-				String content = Jsoup.parse(entry.getContent()).text();
+				String title = entry.getTitle() == null ? null : Jsoup.parse(entry.getTitle()).text();
+				String content = entry.getContent() == null ? null : Jsoup.parse(entry.getContent()).text();
 				boolean condition = !StringUtils.containsIgnoreCase(content, keyword.getKeyword())
 						&& !StringUtils.containsIgnoreCase(title, keyword.getKeyword());
 				if (keyword.getMode() == Mode.EXCLUDE) {

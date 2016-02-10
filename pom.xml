@@ -15,7 +15,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<java.version>1.8</java.version>
-		<dropwizard.version>0.9.0-rc2</dropwizard.version>
+		<dropwizard.version>0.9.1</dropwizard.version>
 		<guice.version>4.0</guice.version>
 		<querydsl.version>4.0.2</querydsl.version>
 		<rome.version>1.5.0</rome.version>
@@ -132,7 +132,7 @@
 			<plugin>
 				<groupId>com.github.kongchen</groupId>
 				<artifactId>swagger-maven-plugin</artifactId>
-				<version>3.1.0</version>
+				<version>3.1.1</version>
 				<configuration>
 					<apiSources>
 						<apiSource>
@@ -143,10 +143,9 @@
 								<title>CommaFeed</title>
 								<version>${project.version}</version>
 							</info>
-							<!-- TODO uncomment when 3.1.1 is released -->
-							<!-- <typesToSkip> -->
-							<!-- <typeToSkip>com.commafeed.backend.model.User</typeToSkip> -->
-							<!-- </typesToSkip> -->
+							<typesToSkip>
+								<typeToSkip>com.commafeed.backend.model.User</typeToSkip>
+							</typesToSkip>
 						</apiSource>
 					</apiSources>
 				</configuration>
@@ -162,7 +161,7 @@
 			<plugin>
 				<groupId>com.github.eirslett</groupId>
 				<artifactId>frontend-maven-plugin</artifactId>
-				<version>0.0.24</version>
+				<version>0.0.25</version>
 				<executions>
 					<execution>
 						<id>install node and npm</id>
@@ -181,6 +180,9 @@
 							<goal>npm</goal>
 						</goals>
 						<phase>compile</phase>
+						<configuration>
+							<arguments>install --loglevel info</arguments>
+						</configuration>
 					</execution>
 					<execution>
 						<id>bower install</id>
@@ -415,17 +417,17 @@
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
-			<version>1.4.187</version>
+			<version>1.4.190</version>
 		</dependency>
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
-			<version>5.1.35</version>
+			<version>5.1.37</version>
 		</dependency>
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
-			<version>9.4-1201-jdbc41</version>
+			<version>9.4-1205-jdbc42</version>
 		</dependency>
 		<dependency>
 			<groupId>net.sourceforge.jtds</groupId>

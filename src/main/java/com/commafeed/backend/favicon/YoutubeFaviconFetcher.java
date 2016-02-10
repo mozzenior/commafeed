@@ -8,9 +8,6 @@ import java.util.Optional;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-
 import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URLEncodedUtils;
 
@@ -27,8 +24,11 @@ import com.google.api.services.youtube.model.Channel;
 import com.google.api.services.youtube.model.ChannelListResponse;
 import com.google.api.services.youtube.model.Thumbnail;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 @Slf4j
-@RequiredArgsConstructor(onConstructor = @__({ @Inject }))
+@RequiredArgsConstructor(onConstructor = @__({ @Inject }) )
 @Singleton
 public class YoutubeFaviconFetcher extends AbstractFaviconFetcher {
 
@@ -54,8 +54,7 @@ public class YoutubeFaviconFetcher extends AbstractFaviconFetcher {
 		try {
 			List<NameValuePair> params = URLEncodedUtils.parse(url.substring(url.indexOf("?") + 1), StandardCharsets.UTF_8);
 			Optional<NameValuePair> userId = params.stream().filter(nvp -> nvp.getName().equalsIgnoreCase("user")).findFirst();
-			Optional<NameValuePair> channelId = params.stream().filter(nvp -> nvp.getName().equalsIgnoreCase("channel")).findFirst();
-			System.out.println(userId.isPresent());
+			Optional<NameValuePair> channelId = params.stream().filter(nvp -> nvp.getName().equalsIgnoreCase("channel_id")).findFirst();
 			if (!userId.isPresent() && !channelId.isPresent()) {
 				return null;
 			}
