@@ -166,8 +166,8 @@
 						</goals>
 						<phase>compile</phase>
 						<configuration>
-							<nodeVersion>v0.10.39</nodeVersion>
-							<npmVersion>3.10.6</npmVersion>
+							<nodeVersion>v8.9.4</nodeVersion>
+							<npmVersion>5.7.1</npmVersion>
 						</configuration>
 					</execution>
 					<execution>
